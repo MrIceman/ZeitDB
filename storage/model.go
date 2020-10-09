@@ -1,4 +1,4 @@
-package data
+package storage
 
 type ZeitModel struct {
 	id        int64

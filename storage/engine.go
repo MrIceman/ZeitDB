@@ -1,4 +1,4 @@
-package data
+package storage
 
 type Engine interface {
 	Update(model *ZeitModel)
@@ -10,7 +10,6 @@ type Engine interface {
 }
 
 type ZeitEngine struct {
-	
 }
 
 func (z ZeitEngine) Update(model *ZeitModel) {
