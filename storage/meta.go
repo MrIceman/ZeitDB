@@ -51,7 +51,7 @@ func (c *Configuration) ObtainMetaInfo() (*MetaInfo, error) {
 	f, err := os.Open(c.MetaInfoFilePath)
 	if err != nil {
 		defer f.Close()
-		byteArray := make([]byte, 64)
+		byteArray := make([]byte, 20)
 		_, err = f.Read(byteArray)
 		if err != nil {
 			return FromByteArray(byteArray), nil
