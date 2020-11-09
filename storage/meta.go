@@ -27,11 +27,12 @@ func (m *MetaInfo) ToByteArray() []byte {
 }
 
 func FromByteArray(data []byte) *MetaInfo {
-	var gl = binary.BigEndian.Uint32(data[0:8])
-	var gh = binary.BigEndian.Uint32(data[8:16])
-	var aop = binary.BigEndian.Uint32(data[24:32])
-	var aoc = binary.BigEndian.Uint32(data[40:48])
-	var ver = binary.BigEndian.Uint32(data[56:64])
+	byteSize := 4
+	var gl = binary.BigEndian.Uint32(data[0:byteSize])
+	var gh = binary.BigEndian.Uint32(data[byteSize : byteSize*2])
+	var aop = binary.BigEndian.Uint32(data[byteSize*2 : byteSize*3])
+	var aoc = binary.BigEndian.Uint32(data[byteSize*3 : byteSize*4])
+	var ver = binary.BigEndian.Uint32(data[byteSize*4 : byteSize*5])
 
 	return &MetaInfo{
 		GlobalHighestTimeStamp: gh,
