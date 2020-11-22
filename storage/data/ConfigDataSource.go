@@ -1,29 +1,36 @@
 package data
 
 import (
-	"ZeitDB/storage/model"
+	"ZeitDB/entity/model"
 	"io/ioutil"
 	"os"
 )
 
-type ConfigSource interface {
-	SetConfig(path string) error
-	GetMetaInfo() (*model.MetaInfo, error)
-	SetMetaInfo(info *model.MetaInfo) error
-	Init() (*model.MetaInfo, error)
+type (
+	ConfigSource interface {
+		SetConfig(path string) error
+		GetMetaInfo() (*model.MetaInfo, error)
+		SetMetaInfo(info *model.MetaInfo) error
+		Init() (*model.MetaInfo, error)
+	}
+)
+
+/**
+	TODO extract all the file accessing into a
+	separate class and generalize / abstract it
+    to make it reusable
+*/
+type ConfigFileDataSource struct {
+	config *model.Configuration
 }
 
-type ConfigDataSource struct {
-	Config *model.Configuration
-}
-
-func (c *ConfigDataSource) SetConfig(config *model.Configuration) error {
-	c.Config = config
+func (c *ConfigFileDataSource) SetConfig(config *model.Configuration) error {
+	c.config = config
 	return nil
 }
 
-func (c *ConfigDataSource) GetMetaInfo() (*model.MetaInfo, error) {
-	f, err := os.Open(c.Config.MetaInfoFilePath)
+func (c *ConfigFileDataSource) GetMetaInfo() (*model.MetaInfo, error) {
+	f, err := os.Open(c.config.MetaInfoFilePath)
 	if err == nil {
 		defer f.Close()
 		byteArray := make([]byte, 20)
@@ -38,7 +45,7 @@ func (c *ConfigDataSource) GetMetaInfo() (*model.MetaInfo, error) {
 	return nil, err
 }
 
-func (c *ConfigDataSource) Init() (*model.MetaInfo, error) {
+func (c *ConfigFileDataSource) Init() (*model.MetaInfo, error) {
 	res, _ := c.GetMetaInfo()
 	if res != nil {
 		println("ConfigManager already exists")
@@ -57,8 +64,8 @@ func (c *ConfigDataSource) Init() (*model.MetaInfo, error) {
 /**
 Writes a new MetaInfo to disk
 */
-func (c *ConfigDataSource) SaveMetaInfo(info *model.MetaInfo) error {
-	path := c.Config.MetaInfoFilePath
+func (c *ConfigFileDataSource) SaveMetaInfo(info *model.MetaInfo) error {
+	path := c.config.MetaInfoFilePath
 	infoBytes := info.ToByteArray()
 	err := ioutil.WriteFile(path, infoBytes, 0644)
 	if err != nil {

@@ -10,7 +10,7 @@ type MetaInfo struct {
 	GlobalHighestTimeStamp uint32
 	// GlobalLowestTimeStamp is the first cell of the first page
 	// GlobalHighestTimeStamp is the last cell of the last page
-	AmountOfPages uint32
+	AmountOfPages int
 	AmountOfCells uint32
 	Version       uint32
 }
@@ -37,7 +37,7 @@ func FromByteArray(data []byte) *MetaInfo {
 		GlobalHighestTimeStamp: gh,
 		GlobalLowestTimeStamp:  gl,
 		AmountOfCells:          aoc,
-		AmountOfPages:          aop,
+		AmountOfPages:          int(aop),
 		Version:                ver,
 	}
 }

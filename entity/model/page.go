@@ -29,6 +29,7 @@ type PageCell struct {
 	DataType byte
 	Content  string
 	Label    string
+	Key      uint32
 	Offset   int
 }
 
