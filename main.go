@@ -1,20 +1,21 @@
 package main
 
 import (
+	"ZeitDB/entity/model"
 	"ZeitDB/storage/data"
-	"ZeitDB/storage/manager"
-	"ZeitDB/storage/model"
+	"ZeitDB/storage/repository"
 	"encoding/json"
 )
 
 func main() {
 	config := model.Configuration{
-		MetaInfoFilePath: "./db2",
+		MetaInfoFilePath: "./dbj2",
 	}
-	configManager := manager.ConfigManager{
-		DataSource: data.ConfigDataSource{
-			Config: &config,
-		}}
+	dataSource := data.ConfigFileDataSource{}
+	configManager := repository.ConfigRepository{}
+
+	dataSource.SetConfig(&config)
+	configManager.SetDataSource(dataSource)
 
 	_, err := configManager.Initialize()
 
