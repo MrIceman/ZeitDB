@@ -1,4 +1,4 @@
-package storage
+package model
 
 /**
     INT8		INT			INT			LONG				LONG
