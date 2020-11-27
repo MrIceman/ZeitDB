@@ -2,16 +2,15 @@ package page
 
 import (
 	"ZeitDB/entity/model"
-	"ZeitDB/entity/model/page"
 	"ZeitDB/storage/data/page/page_utils"
 	"strconv"
 )
 
 type PageSource interface {
 	SetConfiguration(info *model.Configuration)
-	GetLastPage() *page.Page
-	GetFirstPage() *page.Page
-	CreateNewPage() *page.Page
+	GetLastPage() *model.Page
+	GetFirstPage() *model.Page
+	CreateNewPage() *model.Page
 	SearchCell()
 }
 
@@ -25,15 +24,15 @@ func (p *PageFileDataSource) Init(metaInfo *model.MetaInfo, configuration *model
 	p.config = configuration
 }
 
-func (p *PageFileDataSource) GetLastPage() *page.Page {
+func (p *PageFileDataSource) GetLastPage() *model.Page {
 	panic("implement me")
 }
 
-func (p *PageFileDataSource) GetFirstPage() *page.Page {
+func (p *PageFileDataSource) GetFirstPage() *model.Page {
 	panic("implement me")
 }
 
-func (p *PageFileDataSource) CreateNewPage() *page.Page {
+func (p *PageFileDataSource) CreateNewPage() *model.Page {
 	pageIndex := p.metaInfo.AmountOfPages + 1
 	// get the last page
 	strAmountOfPages := strconv.Itoa(pageIndex)
