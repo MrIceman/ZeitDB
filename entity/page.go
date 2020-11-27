@@ -11,7 +11,7 @@ type Page struct {
 */
 type PageHeader struct {
 	// Used for navigation
-	PageNumber uint16
+	PageNumber int8
 	// Read from the Index Map
 	KeyIndex int8
 	// Max Amount of PageSize is 65536 elements, means it can contain
@@ -35,5 +35,5 @@ type PageCell struct {
 	Content  string
 	Label    string
 	Key      uint32
-	Offset   int
+	Offset   uint16
 }
