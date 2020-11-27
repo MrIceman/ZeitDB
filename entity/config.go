@@ -1,4 +1,4 @@
-package model
+package entity
 
 type Configuration struct {
 	MetaInfoFilePath string

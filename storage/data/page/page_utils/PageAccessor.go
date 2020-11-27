@@ -1,13 +1,13 @@
 package page_utils
 
 import (
-	"ZeitDB/entity/model"
+	"ZeitDB/entity"
 )
 
-func ReadPage(path string) *model.Page {
+func ReadPage(path string) *entity.Page {
 	return nil
 }
 
-func WritePage(path string, page *model.Page) error {
+func WritePage(path string, page *entity.Page) error {
 	panic("not implemented yet")
 }

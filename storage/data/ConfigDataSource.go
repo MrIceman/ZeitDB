@@ -1,7 +1,7 @@
 package data
 
 import (
-	"ZeitDB/entity/model"
+	"ZeitDB/entity"
 	"io/ioutil"
 	"os"
 )
@@ -9,9 +9,9 @@ import (
 type (
 	ConfigSource interface {
 		SetConfig(path string) error
-		GetMetaInfo() (*model.MetaInfo, error)
-		SetMetaInfo(info *model.MetaInfo) error
-		Init() (*model.MetaInfo, error)
+		GetMetaInfo() (*entity.MetaInfo, error)
+		SetMetaInfo(info *entity.MetaInfo) error
+		Init() (*entity.MetaInfo, error)
 	}
 )
 
@@ -21,22 +21,22 @@ type (
     to make it reusable
 */
 type ConfigFileDataSource struct {
-	config *model.Configuration
+	config *entity.Configuration
 }
 
-func (c *ConfigFileDataSource) SetConfig(config *model.Configuration) error {
+func (c *ConfigFileDataSource) SetConfig(config *entity.Configuration) error {
 	c.config = config
 	return nil
 }
 
-func (c *ConfigFileDataSource) GetMetaInfo() (*model.MetaInfo, error) {
+func (c *ConfigFileDataSource) GetMetaInfo() (*entity.MetaInfo, error) {
 	f, err := os.Open(c.config.MetaInfoFilePath)
 	if err == nil {
 		defer f.Close()
 		byteArray := make([]byte, 20)
 		_, err = f.Read(byteArray)
 		if err == nil {
-			return model.FromByteArray(byteArray), nil
+			return entity.FromByteArray(byteArray), nil
 		}
 		return nil, err
 	}
@@ -45,14 +45,14 @@ func (c *ConfigFileDataSource) GetMetaInfo() (*model.MetaInfo, error) {
 	return nil, err
 }
 
-func (c *ConfigFileDataSource) Init() (*model.MetaInfo, error) {
+func (c *ConfigFileDataSource) Init() (*entity.MetaInfo, error) {
 	res, _ := c.GetMetaInfo()
 	if res != nil {
 		println("ConfigManager already exists")
 		return res, nil
 	}
 	println("Creating a new ConfigManager.")
-	metaInfo := model.MetaInfo{Version: 001}
+	metaInfo := entity.MetaInfo{Version: 001}
 	err := c.SaveMetaInfo(&metaInfo)
 	if err != nil {
 		return nil, err
@@ -64,7 +64,7 @@ func (c *ConfigFileDataSource) Init() (*model.MetaInfo, error) {
 /**
 Writes a new MetaInfo to disk
 */
-func (c *ConfigFileDataSource) SaveMetaInfo(info *model.MetaInfo) error {
+func (c *ConfigFileDataSource) SaveMetaInfo(info *entity.MetaInfo) error {
 	path := c.config.MetaInfoFilePath
 	infoBytes := info.ToByteArray()
 	err := ioutil.WriteFile(path, infoBytes, 0644)

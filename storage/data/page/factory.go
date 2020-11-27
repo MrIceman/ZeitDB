@@ -1,16 +1,18 @@
 package page
 
-import "ZeitDB/entity/model"
+import (
+	"ZeitDB/entity"
+)
 
-func CreateEmptyPage(pageNumber uint16, keyIndex int8) *model.Page {
-	page := model.Page{
-		Header: model.PageHeader{
+func CreateEmptyPage(pageNumber uint16, keyIndex int8) *entity.Page {
+	page := entity.Page{
+		Header: entity.PageHeader{
 			PageNumber:       pageNumber,
 			KeyIndex:         keyIndex,
 			HighestTimeStamp: 0,
 			LowestTimeStamp:  0,
 		},
-		Cells: []model.PageCell{},
+		Cells: []entity.PageCell{},
 	}
 
 	return &page

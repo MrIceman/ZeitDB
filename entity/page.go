@@ -1,4 +1,4 @@
-package model
+package entity
 
 type Page struct {
 	Header PageHeader

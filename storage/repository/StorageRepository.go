@@ -1,7 +1,9 @@
 package repository
 
-import "ZeitDB/entity/model"
+import (
+	"ZeitDB/entity"
+)
 
 type StorageRepository struct {
-	metaInfo *model.MetaInfo
+	metaInfo *entity.MetaInfo
 }

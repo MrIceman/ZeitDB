@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"ZeitDB/entity/model"
+	"ZeitDB/entity"
 	"ZeitDB/storage/data"
 )
 
@@ -13,15 +13,15 @@ func (c *ConfigRepository) SetDataSource(source data.ConfigFileDataSource) {
 	c.dataSource = source
 }
 
-func (c *ConfigRepository) ObtainMetaInfo() (*model.MetaInfo, error) {
+func (c *ConfigRepository) ObtainMetaInfo() (*entity.MetaInfo, error) {
 	return c.dataSource.GetMetaInfo()
 }
 
-func (c *ConfigRepository) Initialize() (*model.MetaInfo, error) {
+func (c *ConfigRepository) Initialize() (*entity.MetaInfo, error) {
 	return c.dataSource.Init()
 }
 
-func (c *ConfigRepository) UpdateMetaInfo(metaInfo *model.MetaInfo) (*model.MetaInfo, error) {
+func (c *ConfigRepository) UpdateMetaInfo(metaInfo *entity.MetaInfo) (*entity.MetaInfo, error) {
 	err := c.dataSource.SaveMetaInfo(metaInfo)
 	if err != nil {
 		return nil, err

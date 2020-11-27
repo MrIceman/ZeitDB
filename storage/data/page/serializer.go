@@ -1,7 +1,7 @@
 package page
 
 import (
-	"ZeitDB/entity/model"
+	"ZeitDB/entity"
 	"bytes"
 	"encoding/binary"
 )
@@ -9,7 +9,7 @@ import (
 type PageSerializer struct {
 }
 
-func (ps *PageSerializer) serializeHeader(ph *model.PageHeader) []byte {
+func (ps *PageSerializer) serializeHeader(ph *entity.PageHeader) []byte {
 	buffer := new(bytes.Buffer)
 	binary.Write(buffer, binary.BigEndian, ph.PageNumber)
 	binary.Write(buffer, binary.BigEndian, ph.KeyIndex)
@@ -20,7 +20,7 @@ func (ps *PageSerializer) serializeHeader(ph *model.PageHeader) []byte {
 	return buffer.Bytes()
 }
 
-func (ps *PageSerializer) serializeCell(pc *model.PageCell) []byte {
+func (ps *PageSerializer) serializeCell(pc *entity.PageCell) []byte {
 	buffer := new(bytes.Buffer)
 	binary.Write(buffer, binary.BigEndian, pc.DataType)
 	binary.Write(buffer, binary.BigEndian, pc.Content)
@@ -31,7 +31,7 @@ func (ps *PageSerializer) serializeCell(pc *model.PageCell) []byte {
 	return buffer.Bytes()
 }
 
-func (ps *PageSerializer) SerializePage(page *model.Page) []byte {
+func (ps *PageSerializer) SerializePage(page *entity.Page) []byte {
 	// Concat of header+cell
 	header := ps.serializeHeader(&page.Header)
 	cells := make([]byte, len(page.Cells)*49)
@@ -43,14 +43,14 @@ func (ps *PageSerializer) SerializePage(page *model.Page) []byte {
 	return append(header, cells...)
 }
 
-func (ps *PageSerializer) deserializeHeader(bytes *[]byte) *model.PageHeader {
+func (ps *PageSerializer) deserializeHeader(bytes *[]byte) *entity.PageHeader {
 
 }
 
-func (ps *PageSerializer) deserializeCell(bytes *[]byte) *model.PageCell {
+func (ps *PageSerializer) deserializeCell(bytes *[]byte) *entity.PageCell {
 
 }
 
-func (ps *PageSerializer) DeserializePage(bytes *[]byte) *model.Page {
+func (ps *PageSerializer) DeserializePage(bytes *[]byte) *entity.Page {
 
 }

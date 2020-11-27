@@ -1,14 +1,14 @@
 package main
 
 import (
-	"ZeitDB/entity/model"
+	"ZeitDB/entity"
 	"ZeitDB/storage/data"
 	"ZeitDB/storage/repository"
 	"encoding/json"
 )
 
 func main() {
-	config := model.Configuration{
+	config := entity.Configuration{
 		MetaInfoFilePath: "./dbj2",
 	}
 	dataSource := data.ConfigFileDataSource{}
@@ -19,7 +19,7 @@ func main() {
 
 	_, err := configManager.Initialize()
 
-	configManager.UpdateMetaInfo(&model.MetaInfo{
+	configManager.UpdateMetaInfo(&entity.MetaInfo{
 		GlobalLowestTimeStamp:  100,
 		GlobalHighestTimeStamp: 10000,
 		AmountOfPages:          30,
@@ -34,7 +34,7 @@ func main() {
 	printMetaInfo(metaInfo)
 }
 
-func printMetaInfo(info *model.MetaInfo) {
+func printMetaInfo(info *entity.MetaInfo) {
 	jsonRepr, _ := json.Marshal(info)
 
 	println(jsonRepr)
