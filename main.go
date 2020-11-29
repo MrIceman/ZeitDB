@@ -3,39 +3,53 @@ package main
 import (
 	"ZeitDB/entity"
 	"ZeitDB/storage/data"
+	"ZeitDB/storage/data/page"
 	"ZeitDB/storage/repository"
-	"encoding/json"
+	"fmt"
 )
 
+func createEmptyPage(config *entity.Configuration, meta *entity.MetaInfo, configRepository *repository.ConfigRepository) {
+	ds := page.PageFileDataSource{}
+	ds.Init(meta, config)
+	pageRepository := repository.PageRepository{}
+	pageRepository.SetDataSource(&ds)
+
+	result, err := pageRepository.CreateNewPage()
+
+	if err != nil {
+		panic(err)
+	}
+
+	meta.AmountOfPages += 1
+	metaInfo, err := configRepository.UpdateMetaInfo(meta)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Created page ", result.Header.PageNumber)
+	fmt.Println("New page size: ", metaInfo.AmountOfPages)
+
+}
+
 func main() {
+
 	config := entity.Configuration{
 		MetaInfoFilePath: "./dbj2",
 	}
 	dataSource := data.ConfigFileDataSource{}
-	configManager := repository.ConfigRepository{}
+	configRepository := repository.ConfigRepository{}
 
 	dataSource.SetConfig(&config)
-	configManager.SetDataSource(dataSource)
+	configRepository.SetDataSource(dataSource)
 
-	_, err := configManager.Initialize()
+	info, err := configRepository.Initialize()
 
-	configManager.UpdateMetaInfo(&entity.MetaInfo{
-		GlobalLowestTimeStamp:  100,
-		GlobalHighestTimeStamp: 10000,
-		AmountOfPages:          30,
-		AmountOfCells:          20,
-		Version:                5,
-	})
-
-	metaInfo, err := configManager.ObtainMetaInfo()
 	if err != nil {
 		panic(err)
 	}
-	printMetaInfo(metaInfo)
-}
 
-func printMetaInfo(info *entity.MetaInfo) {
-	jsonRepr, _ := json.Marshal(info)
-
-	println(jsonRepr)
+	createEmptyPage(
+		&config,
+		info,
+		&configRepository,
+	)
 }

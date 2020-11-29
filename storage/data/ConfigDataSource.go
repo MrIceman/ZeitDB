@@ -2,6 +2,7 @@ package data
 
 import (
 	"ZeitDB/entity"
+	"fmt"
 	"io/ioutil"
 	"os"
 )
@@ -48,7 +49,7 @@ func (c *ConfigFileDataSource) GetMetaInfo() (*entity.MetaInfo, error) {
 func (c *ConfigFileDataSource) Init() (*entity.MetaInfo, error) {
 	res, _ := c.GetMetaInfo()
 	if res != nil {
-		println("ConfigManager already exists")
+		fmt.Println("ConfigManager already exists. Pages:", res.AmountOfPages)
 		return res, nil
 	}
 	println("Creating a new ConfigManager.")

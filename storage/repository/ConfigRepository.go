@@ -24,6 +24,7 @@ func (c *ConfigRepository) Initialize() (*entity.MetaInfo, error) {
 func (c *ConfigRepository) UpdateMetaInfo(metaInfo *entity.MetaInfo) (*entity.MetaInfo, error) {
 	err := c.dataSource.SaveMetaInfo(metaInfo)
 	if err != nil {
+		panic(err)
 		return nil, err
 	}
 	return metaInfo, nil

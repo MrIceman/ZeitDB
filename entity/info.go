@@ -10,34 +10,39 @@ type MetaInfo struct {
 	GlobalHighestTimeStamp uint32
 	// GlobalLowestTimeStamp is the first cell of the first page
 	// GlobalHighestTimeStamp is the last cell of the last page
-	AmountOfPages int
+	AmountOfPages uint32
 	AmountOfCells uint32
 	Version       uint32
 }
 
 func (m *MetaInfo) ToByteArray() []byte {
 	buffer := new(bytes.Buffer)
-	binary.Write(buffer, binary.BigEndian, m.GlobalLowestTimeStamp)
-	binary.Write(buffer, binary.BigEndian, m.GlobalHighestTimeStamp)
-	binary.Write(buffer, binary.BigEndian, m.AmountOfPages)
-	binary.Write(buffer, binary.BigEndian, m.AmountOfCells)
-	binary.Write(buffer, binary.BigEndian, m.Version)
+	err := binary.Write(buffer, binary.BigEndian, m.GlobalLowestTimeStamp)
+	err = binary.Write(buffer, binary.BigEndian, m.GlobalHighestTimeStamp)
+	err = binary.Write(buffer, binary.BigEndian, m.AmountOfPages)
+	err = binary.Write(buffer, binary.BigEndian, m.AmountOfCells)
+	err = binary.Write(buffer, binary.BigEndian, m.Version)
+	println("Serializ byte length: ", len(buffer.Bytes()))
+	if err != nil {
+		panic(err)
+	}
 	return buffer.Bytes()
 }
 
 func FromByteArray(data []byte) *MetaInfo {
 	byteSize := 4
-	var gl = binary.BigEndian.Uint32(data[0:byteSize])
-	var gh = binary.BigEndian.Uint32(data[byteSize : byteSize*2])
-	var aop = binary.BigEndian.Uint32(data[byteSize*2 : byteSize*3])
-	var aoc = binary.BigEndian.Uint32(data[byteSize*3 : byteSize*4])
-	var ver = binary.BigEndian.Uint32(data[byteSize*4 : byteSize*5])
+	println(len(data))
+	var globalLowestTs = binary.BigEndian.Uint32(data[0:byteSize])
+	var globalHighestTs = binary.BigEndian.Uint32(data[byteSize : byteSize*2])
+	var amountOfpages = binary.BigEndian.Uint32(data[byteSize*2 : byteSize*3])
+	var amountOfCells = binary.BigEndian.Uint32(data[byteSize*3 : byteSize*4])
+	var version = binary.BigEndian.Uint32(data[byteSize*4 : byteSize*5])
 
 	return &MetaInfo{
-		GlobalHighestTimeStamp: gh,
-		GlobalLowestTimeStamp:  gl,
-		AmountOfCells:          aoc,
-		AmountOfPages:          int(aop),
-		Version:                ver,
+		GlobalHighestTimeStamp: globalHighestTs,
+		GlobalLowestTimeStamp:  globalLowestTs,
+		AmountOfCells:          amountOfCells,
+		AmountOfPages:          amountOfpages,
+		Version:                version,
 	}
 }

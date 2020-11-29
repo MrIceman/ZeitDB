@@ -4,7 +4,7 @@ import (
 	"ZeitDB/entity"
 )
 
-func CreateEmptyPage(pageNumber uint16, keyIndex int8) *entity.Page {
+func CreateEmptyPage(pageNumber int8, keyIndex int8) *entity.Page {
 	page := entity.Page{
 		Header: entity.PageHeader{
 			PageNumber:       pageNumber,
