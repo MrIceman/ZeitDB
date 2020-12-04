@@ -4,7 +4,6 @@ import (
 	"ZeitDB/entity"
 	"bytes"
 	"encoding/binary"
-	"unsafe"
 )
 
 type PageSerializer struct {
@@ -53,12 +52,12 @@ func (ps *PageSerializer) SerializePage(page *entity.Page) []byte {
 }
 
 func (ps *PageSerializer) DeserializeHeader(data []byte) *entity.PageHeader {
-	int32Size := unsafe.Sizeof(int32(0))
-	pageNumber := binary.BigEndian.Uint16(data[0:1])                                 // 0...1 byte
-	keyIndex := binary.BigEndian.Uint16(data[1:2])                                   // +1 byte
-	pageSize := binary.BigEndian.Uint16(data[2:4])                                   // +2 bytes
-	lowestTimeStamp := binary.BigEndian.Uint32(data[4 : 4+int32Size])                // + int bytes
-	highestTimeStamp := binary.BigEndian.Uint32(data[4+int32Size : 4+(2*int32Size)]) // + 4 bytes
+	intBytes := 4
+	pageNumber := data[0]                                                          // 1 byte
+	keyIndex := data[1]                                                            // 1 byte
+	pageSize := binary.BigEndian.Uint16(data[2:4])                                 // 2 bytes
+	lowestTimeStamp := binary.BigEndian.Uint32(data[4 : 4+intBytes])               // 4 bytes
+	highestTimeStamp := binary.BigEndian.Uint32(data[4+intBytes : 4+(2*intBytes)]) // 4 bytes
 
 	return &entity.PageHeader{
 		PageNumber:       int8(pageNumber),
