@@ -11,6 +11,7 @@ func CreateEmptyPage(pageNumber int8, keyIndex int8) *entity.Page {
 			KeyIndex:         keyIndex,
 			HighestTimeStamp: -1,
 			LowestTimeStamp:  -1,
+			PageSize:         0,
 		},
 		Cells: &[]entity.PageCell{},
 	}
