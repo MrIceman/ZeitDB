@@ -16,19 +16,17 @@ func (p *PageFileDataSource) Init(metaInfo *entity.MetaInfo, configuration *enti
 	p.config = configuration
 }
 
-func (p *PageFileDataSource) GetLastPage() *entity.Page {
-	panic("implement me")
-}
-
-func (p *PageFileDataSource) GetFirstPage() *entity.Page {
-	panic("implement me")
+func (p *PageFileDataSource) GetPage(pageIndex int8) (*entity.Page, error) {
+	filePath := p.config.PageRootFilePath + strconv.Itoa(int(pageIndex+1))
+	println("FilePath: " + filePath)
+	return io.ReadPage(filePath, &io.PageSerializer{})
 }
 
 func (p *PageFileDataSource) CreateNewPage() (*entity.Page, error) {
 	pageIndex := p.metaInfo.AmountOfPages + 1
 	// get the last page
 	strAmountOfPages := strconv.Itoa(int(pageIndex))
-	filePath := p.config.PageRootFilePath + " " + strAmountOfPages
+	filePath := p.config.PageRootFilePath + strAmountOfPages
 
 	// todo keyIndex has to be calculated differently, it needs to be the first
 	// available page

@@ -7,14 +7,12 @@ import (
 	"os"
 )
 
-type (
-	ConfigSource interface {
-		SetConfig(path string) error
-		GetMetaInfo() (*entity.MetaInfo, error)
-		SetMetaInfo(info *entity.MetaInfo) error
-		Init() (*entity.MetaInfo, error)
-	}
-)
+type ConfigSource interface {
+	SetConfig(path string) error
+	GetMetaInfo() (*entity.MetaInfo, error)
+	SetMetaInfo(info *entity.MetaInfo) error
+	Init() (*entity.MetaInfo, error)
+}
 
 /**
 	TODO extract all the file accessing into a
@@ -28,6 +26,10 @@ type ConfigFileDataSource struct {
 func (c *ConfigFileDataSource) SetConfig(config *entity.Configuration) error {
 	c.config = config
 	return nil
+}
+
+func (c *ConfigFileDataSource) Config() *entity.Configuration {
+	return c.config
 }
 
 func (c *ConfigFileDataSource) GetMetaInfo() (*entity.MetaInfo, error) {

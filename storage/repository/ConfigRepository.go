@@ -17,6 +17,10 @@ func (c *ConfigRepository) ObtainMetaInfo() (*entity.MetaInfo, error) {
 	return c.dataSource.GetMetaInfo()
 }
 
+func (c *ConfigRepository) Config() *entity.Configuration {
+	return c.dataSource.Config()
+}
+
 func (c *ConfigRepository) Initialize() (*entity.MetaInfo, error) {
 	return c.dataSource.Init()
 }
@@ -28,5 +32,4 @@ func (c *ConfigRepository) UpdateMetaInfo(metaInfo *entity.MetaInfo) (*entity.Me
 		return nil, err
 	}
 	return metaInfo, nil
-
 }

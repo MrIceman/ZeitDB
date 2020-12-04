@@ -1,13 +1,18 @@
 package entity
 
 type Page struct {
-	Header PageHeader
-	Cells  []PageCell
+	Header *PageHeader
+	Cells  *[]PageCell
 }
 
 /**
     INT8		INT			INT			LONG				LONG
   INDEX # PAGE_NUMBER # PAGE_SIZE # LOWEST_TIMESTAMP # HIGHEST_TIMESTAMP #
+
+  PAGE_NUMBER | KEY_INDEX | PAGE_SIZE | LOWEST_TIMESTAMP | HIGHEST_TIMESTAMP
+	1 Byte		1 Byte		2 Bytes		4 Bytes				4 Bytes
+
+	12 Bytes in total
 */
 type PageHeader struct {
 	// Used for navigation
@@ -17,8 +22,8 @@ type PageHeader struct {
 	// Max Amount of PageSize is 65536 elements, means it can contain
 	// 65536 PageCell objects
 	PageSize         uint16
-	LowestTimeStamp  int
-	HighestTimeStamp int
+	LowestTimeStamp  int32
+	HighestTimeStamp int32
 }
 
 /**

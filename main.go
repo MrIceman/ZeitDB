@@ -2,17 +2,17 @@ package main
 
 import (
 	"ZeitDB/entity"
-	"ZeitDB/storage/data"
 	"ZeitDB/storage/data/page"
+	"ZeitDB/storage/factory"
 	"ZeitDB/storage/repository"
 	"fmt"
 )
 
-func createEmptyPage(config *entity.Configuration, meta *entity.MetaInfo, configRepository *repository.ConfigRepository) {
-	ds := page.PageFileDataSource{}
-	ds.Init(meta, config)
-	pageRepository := repository.PageRepository{}
-	pageRepository.SetDataSource(&ds)
+func createEmptyPage(
+	meta *entity.MetaInfo,
+	configRepository *repository.ConfigRepository,
+	pageRepository *repository.PageRepository,
+) {
 
 	result, err := pageRepository.CreateNewPage()
 
@@ -27,29 +27,35 @@ func createEmptyPage(config *entity.Configuration, meta *entity.MetaInfo, config
 	}
 	fmt.Println("Created page ", result.Header.PageNumber)
 	fmt.Println("New page size: ", metaInfo.AmountOfPages)
-
 }
 
 func main() {
-
-	config := entity.Configuration{
-		MetaInfoFilePath: "./dbj2",
-	}
-	dataSource := data.ConfigFileDataSource{}
-	configRepository := repository.ConfigRepository{}
-
-	dataSource.SetConfig(&config)
-	configRepository.SetDataSource(dataSource)
-
+	configRepository := factory.CreateConfigRepository(
+		"./dbj2",
+		"./",
+	)
 	info, err := configRepository.Initialize()
 
 	if err != nil {
 		panic(err)
 	}
 
+	ds := page.PageFileDataSource{}
+	ds.Init(info, configRepository.Config())
+	pageRepository := repository.PageRepository{}
+	pageRepository.SetDataSource(&ds)
+
 	createEmptyPage(
-		&config,
 		info,
-		&configRepository,
+		configRepository,
+		&pageRepository,
 	)
+
+	for i := 0; i < int(info.AmountOfPages); i++ {
+		createdPage, err := pageRepository.GetPage(int8(i))
+		if err != nil {
+			panic(err)
+		}
+		println(createdPage.Header.PageNumber)
+	}
 }

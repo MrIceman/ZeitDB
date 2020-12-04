@@ -22,7 +22,6 @@ func (m *MetaInfo) ToByteArray() []byte {
 	err = binary.Write(buffer, binary.BigEndian, m.AmountOfPages)
 	err = binary.Write(buffer, binary.BigEndian, m.AmountOfCells)
 	err = binary.Write(buffer, binary.BigEndian, m.Version)
-	println("Serializ byte length: ", len(buffer.Bytes()))
 	if err != nil {
 		panic(err)
 	}
@@ -31,7 +30,6 @@ func (m *MetaInfo) ToByteArray() []byte {
 
 func FromByteArray(data []byte) *MetaInfo {
 	byteSize := 4
-	println(len(data))
 	var globalLowestTs = binary.BigEndian.Uint32(data[0:byteSize])
 	var globalHighestTs = binary.BigEndian.Uint32(data[byteSize : byteSize*2])
 	var amountOfpages = binary.BigEndian.Uint32(data[byteSize*2 : byteSize*3])
