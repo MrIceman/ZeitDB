@@ -9,6 +9,10 @@ import (
 	"unsafe"
 )
 
+/**
+	The Page is composed of a PageHeader and an array of PageCells.
+    |PageHeader| PC 0 | PC 1 | PC 2 | ... | PC 3
+*/
 func ReadPage(
 	path string,
 	serializer *PageSerializer) (*entity.Page, error) {
@@ -26,9 +30,16 @@ func ReadPage(
 		} else if err != nil {
 			panic(err)
 		}
-
+		var pageCells []entity.PageCell
+		if header.PageSize > 0 {
+			// Parse Page Cells
+			totalCellMemory := header.PageSize * uint16(unsafe.Sizeof(entity.PageCell{}))
+			pageCellsRaw := make([]byte, totalCellMemory)
+			readLen, err = f.ReadAt(pageCellsRaw, int64(len(pageHeaderRaw)))
+		}
 		return &entity.Page{
 			Header: header,
+			Cells:  &pageCells,
 		}, nil
 	} else {
 		return nil, err

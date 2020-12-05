@@ -22,13 +22,17 @@ type PageHeader struct {
 	// Max Amount of PageSize is 65536 elements, means it can contain
 	// 65536 PageCell objects
 	PageSize         uint16
-	LowestTimeStamp  int32
-	HighestTimeStamp int32
+	LowestTimeStamp  int64
+	HighestTimeStamp int64
+	IndexFileName    string
 }
 
 /**
-  A page cell has a fixed size of
-   1 + 16 + 16 + 16 = 49 bytes
+  A page cell has following structure
+	KEY | LABEL | DATA_TYPE | LENGTH | CONTENT
+
+	A label is a 4 byte integer and is mapped within a label-table to the
+	full qualifier
 */
 type PageCell struct {
 	/**
@@ -36,9 +40,9 @@ type PageCell struct {
 	  0x02  = string
 	  0x03  = bool
 	*/
+	Key      int64
+	Label    int32
 	DataType byte
+	Length   int32
 	Content  string
-	Label    string
-	Key      uint32
-	Offset   uint16
 }
