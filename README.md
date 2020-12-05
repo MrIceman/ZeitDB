@@ -1,5 +1,7 @@
 # ZeitDB
-ZeitDB is a time-series, push based lightweight disk-based database.<br/>
+ZeitDB is a time-series, push based lightweight disk database. The main aim currently is to learn more about database</br>
+internals, practice Go-Lang skills and play around with latest research regarding data storage. <br/>
+Right now it is <font color="red"><b>heavily Under Construction </b></font>
 <br/>
 ## Architectural draft
 Transport -> Query Processor -> Execution Engine -> Storage Engine
