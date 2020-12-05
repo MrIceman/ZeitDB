@@ -44,18 +44,17 @@ func main() {
 	ds.Init(info, configRepository.Config())
 	pageRepository := repository.PageRepository{}
 	pageRepository.SetDataSource(&ds)
-
 	createEmptyPage(
 		info,
 		configRepository,
 		&pageRepository,
 	)
-
 	for i := 0; i < int(info.AmountOfPages); i++ {
 		createdPage, err := pageRepository.GetPage(int8(i))
 		if err != nil {
 			panic(err)
+		} else {
+			println(createdPage.Header)
 		}
-		println(createdPage.Header.PageNumber)
 	}
 }
