@@ -1,8 +1,14 @@
 package entity
 
+import "strconv"
+
 type Page struct {
 	Header *PageHeader
 	Cells  *[]PageCell
+}
+
+func (p *Page) ToString() string {
+	return (*p.Header).ToString() + " / cells: " + strconv.Itoa(len(*p.Cells))
 }
 
 /**
@@ -15,6 +21,9 @@ type Page struct {
 	12 Bytes in total
 */
 type PageHeader struct {
+	// Added a placeholder so the PageHeader is a multiple
+	// of 8 (24 in this case), and we can avoid alignment
+	Magic int32
 	// Used for navigation
 	PageNumber int8
 	// Read from the Index Map
@@ -24,7 +33,27 @@ type PageHeader struct {
 	PageSize         uint16
 	LowestTimeStamp  int64
 	HighestTimeStamp int64
-	IndexFileName    string
+}
+
+func (ph *PageHeader) ToString() string {
+	return "hst: " + int64ToString(ph.HighestTimeStamp) + " lst:" + int64ToString(ph.LowestTimeStamp) + " pageSize:" +
+		int16ToString(ph.PageSize) + " keyIndex: " + int8ToString(ph.KeyIndex) +
+		" pageNumber:" + int8ToString(ph.PageNumber)
+}
+
+func int64ToString(anyInt int64) string {
+	return strconv.Itoa(int(anyInt))
+}
+
+func int32ToString(anyInt int32) string {
+	return strconv.Itoa(int(anyInt))
+}
+func int16ToString(anyInt uint16) string {
+	return strconv.Itoa(int(anyInt))
+}
+
+func int8ToString(anyInt int8) string {
+	return strconv.Itoa(int(anyInt))
 }
 
 /**

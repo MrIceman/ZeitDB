@@ -4,7 +4,27 @@ import (
 	"ZeitDB/entity"
 	"testing"
 	"time"
+	"unsafe"
 )
+
+type blah struct {
+	asas  int32
+	iasas int32
+	asas2 int8
+}
+
+func TestHeaderLength(t *testing.T) {
+	var asfio string
+	println("blah blah", asfio != "")
+	headerSize := unsafe.Sizeof(entity.PageHeader{})
+	println(unsafe.Sizeof(int64(0)))
+	println(unsafe.Sizeof(uint16(0)))
+	println(unsafe.Sizeof(int8(0)))
+	println("header size: ", headerSize)
+	if headerSize != 24 {
+		t.Error("Header is not 24 bytes long but ", headerSize)
+	}
+}
 
 func TestPageSerializer_DeserializeHeader(t *testing.T) {
 	header := entity.PageHeader{
@@ -16,7 +36,6 @@ func TestPageSerializer_DeserializeHeader(t *testing.T) {
 	}
 
 	serializer := PageSerializer{}
-
 	bytes := serializer.serializeHeader(&header)
 
 	if len(bytes) != 20 {
@@ -43,7 +62,7 @@ func TestPageSerializer_DeserializeHeader(t *testing.T) {
 }
 
 func TestPageSerializer_DeserializeCell(t *testing.T) {
-	content := "1jiyvasiofjiojiosjfiosjfiojasoifjoisajiofjiojiosjfiosjfiojasoifjoisajiofjiojiosjfiosjfiojasoifjoisajiofjiojiosjfiosjfiojasoifjoisajiofjiojiosjfiosjfiojasoifjoisajiof"
+	content := "1jiyvasiof sajiof"
 	cell := entity.PageCell{
 		DataType: 0x9,
 		Content:  content,
@@ -53,10 +72,16 @@ func TestPageSerializer_DeserializeCell(t *testing.T) {
 	serializer := PageSerializer{}
 	cellMemorySize := 8 + 4 + 1 + 4 + len([]byte(content))
 	serializedCell := serializer.serializeCell(&cell)
+	println(cellMemorySize)
 	if len(serializedCell) != cellMemorySize {
 		t.Error("Serialized Cell is not ", cellMemorySize, " bytes long, but ", len(serializedCell))
 	}
-	//deserializedCell := serializer.deserializeCell(serializedCell)
+	deserializedCell := serializer.deserializeCell(serializedCell)
+	deserializedCellSize := 8 + 4 + 1 + 4 + int(deserializedCell.Length)
+	println("Deserialized Cell length:", deserializedCellSize)
+	if deserializedCellSize != cellMemorySize {
+		t.Error("Deserialized Cell is not ", cellMemorySize, " bytes long, but ", deserializedCellSize)
+	}
 
 }
 
@@ -64,7 +89,7 @@ func TestPageSerializer_DeserializePage(t *testing.T) {
 	header := entity.PageHeader{
 		PageNumber:       10,
 		KeyIndex:         4,
-		PageSize:         13,
+		PageSize:         1,
 		LowestTimeStamp:  10,
 		HighestTimeStamp: 1780,
 	}
@@ -73,15 +98,18 @@ func TestPageSerializer_DeserializePage(t *testing.T) {
 		Header: &header,
 		Cells: &[]entity.PageCell{
 			{
-				DataType: 20,
-				Content:  "1jiyvasiof sajiof",
-				Label:    3,
-				Key:      20,
+				DataType: 20,                           // 1 byte
+				Content:  "1jjiojiojioiyvasiof sajiof", // 26 bytes
+				Label:    3,                            // 4 bytes
+				Key:      20,                           // 8 bytes
 			},
 		},
 	}
 	serializer := PageSerializer{}
 	serializedPage := serializer.SerializePage(&p)
-	deserializedPage := serializer.DeserializePage(&serializedPage)
-	println(deserializedPage)
+	deserializedPage := *serializer.DeserializePage(&serializedPage)
+
+	if len(*deserializedPage.Cells) != 1 {
+		t.Error("There should be 1 cell deserialized but instead we got", len(*deserializedPage.Cells))
+	}
 }

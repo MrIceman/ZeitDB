@@ -17,6 +17,7 @@ func ReadPage(
 	path string,
 	serializer *PageSerializer) (*entity.Page, error) {
 	f, err := os.Open(path)
+	println("opening path", path)
 	if err == nil {
 		defer f.Close()
 		pageHeaderRaw := make([]byte, unsafe.Sizeof(entity.PageHeader{}))
@@ -25,7 +26,7 @@ func ReadPage(
 
 		readLen, err := f.ReadAt(pageHeaderRaw, 0)
 		header := serializer.DeserializeHeader(pageHeaderRaw)
-		if readLen != len(pageHeaderRaw) {
+		if (readLen + 4) != len(pageHeaderRaw) {
 			panic(errors.New("invalid page length. Expected " + strconv.Itoa(len(pageHeaderRaw)) + "but received" + strconv.Itoa(readLen)))
 		} else if err != nil {
 			panic(err)
@@ -48,7 +49,6 @@ func ReadPage(
 
 func WritePage(path string, page *entity.Page, serializer *PageSerializer) error {
 	bytes := serializer.SerializePage(page)
-	println("Writing ", unsafe.Sizeof(*page.Header), " bytes ", unsafe.Sizeof(*page))
 	err := ioutil.WriteFile(path, bytes, 0644)
 	if err != nil {
 		return err

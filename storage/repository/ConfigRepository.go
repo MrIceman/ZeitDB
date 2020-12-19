@@ -21,7 +21,7 @@ func (c *ConfigRepository) Config() *entity.Configuration {
 	return c.dataSource.Config()
 }
 
-func (c *ConfigRepository) Initialize() (*entity.MetaInfo, error) {
+func (c *ConfigRepository) InitializeMetaInfo() (*entity.MetaInfo, error) {
 	return c.dataSource.Init()
 }
 

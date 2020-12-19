@@ -9,7 +9,7 @@ import (
 )
 
 func createEmptyPage(
-	meta *entity.MetaInfo,
+	metaInfo *entity.MetaInfo,
 	configRepository *repository.ConfigRepository,
 	pageRepository *repository.PageRepository,
 ) {
@@ -20,13 +20,13 @@ func createEmptyPage(
 		panic(err)
 	}
 
-	meta.AmountOfPages += 1
-	metaInfo, err := configRepository.UpdateMetaInfo(meta)
+	metaInfo.AmountOfPages += 1
+	updatedMetaInfo, err := configRepository.UpdateMetaInfo(metaInfo)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("Created page ", result.Header.PageNumber)
-	fmt.Println("New page size: ", metaInfo.AmountOfPages)
+	fmt.Println("New page size: ", updatedMetaInfo.AmountOfPages)
 }
 
 func main() {
@@ -34,22 +34,22 @@ func main() {
 		"./dbj2",
 		"./",
 	)
-	info, err := configRepository.Initialize()
+	metaInfo, err := configRepository.InitializeMetaInfo()
 
 	if err != nil {
 		panic(err)
 	}
 
 	ds := page.PageFileDataSource{}
-	ds.Init(info, configRepository.Config())
+	ds.Init(metaInfo, configRepository.Config())
 	pageRepository := repository.PageRepository{}
 	pageRepository.SetDataSource(&ds)
 	createEmptyPage(
-		info,
+		metaInfo,
 		configRepository,
 		&pageRepository,
 	)
-	for i := 0; i < int(info.AmountOfPages); i++ {
+	for i := 0; i < int(metaInfo.AmountOfPages); i++ {
 		createdPage, err := pageRepository.GetPage(int8(i))
 		if err != nil {
 			panic(err)
