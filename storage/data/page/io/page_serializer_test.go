@@ -67,12 +67,12 @@ func TestPageSerializer_DeserializeCell(t *testing.T) {
 		DataType: 0x9,
 		Content:  content,
 		Label:    0,
+		Length:   -1,
 		Key:      time.Now().Unix(),
 	}
 	serializer := PageSerializer{}
 	cellMemorySize := 8 + 4 + 1 + 4 + len([]byte(content))
 	serializedCell := serializer.serializeCell(&cell)
-	println(cellMemorySize)
 	if len(serializedCell) != cellMemorySize {
 		t.Error("Serialized Cell is not ", cellMemorySize, " bytes long, but ", len(serializedCell))
 	}
@@ -92,24 +92,45 @@ func TestPageSerializer_DeserializePage(t *testing.T) {
 		PageSize:         1,
 		LowestTimeStamp:  10,
 		HighestTimeStamp: 1780,
+		Magic:            0,
+	}
+	cell := entity.PageCell{
+		DataType: 20,                           // 1 byte
+		Content:  "1jjiojiojioiyvasiof sajiof", // 26 bytes
+		Label:    3,                            // 4 bytes
+		Key:      20,                           // 8 bytes
 	}
 
 	p := entity.Page{
 		Header: &header,
 		Cells: &[]entity.PageCell{
-			{
-				DataType: 20,                           // 1 byte
-				Content:  "1jjiojiojioiyvasiof sajiof", // 26 bytes
-				Label:    3,                            // 4 bytes
-				Key:      20,                           // 8 bytes
-			},
+			cell,
 		},
 	}
 	serializer := PageSerializer{}
 	serializedPage := serializer.SerializePage(&p)
-	deserializedPage := *serializer.DeserializePage(&serializedPage)
+	deserializedPage := *serializer.DeserializePage(serializedPage)
 
 	if len(*deserializedPage.Cells) != 1 {
 		t.Error("There should be 1 cell deserialized but instead we got", len(*deserializedPage.Cells))
+	}
+
+	// assert values
+	deserializedCell := (*deserializedPage.Cells)[0]
+
+	if int(deserializedCell.Length) != len([]byte((*p.Cells)[0].Content)) {
+		t.Error("Cell content was not deserialized properly. The length does not match.")
+	}
+	if deserializedCell.DataType != cell.DataType {
+		t.Error("DataType is not as expected")
+	}
+	if deserializedCell.Content != cell.Content {
+		t.Error("Cell is not as expected")
+	}
+	if deserializedCell.Key != cell.Key {
+		t.Error("Key is not as expected")
+	}
+	if deserializedCell.Label != cell.Label {
+		t.Error("Label is not as expected")
 	}
 }
