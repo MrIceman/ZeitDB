@@ -16,7 +16,7 @@ func CreateEmptyPage(pageNumber int8,
 			LowestTimeStamp:  -1,
 			PageSize:         0,
 		},
-		Cells: nil,
+		Cells: &[]entity.PageCell{},
 	}
 
 	return &page

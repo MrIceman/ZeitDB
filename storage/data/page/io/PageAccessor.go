@@ -26,7 +26,7 @@ func ReadPage(
 
 		readLen, err := f.ReadAt(pageHeaderRaw, 0)
 		header := serializer.DeserializeHeader(pageHeaderRaw)
-		if (readLen + 4) != len(pageHeaderRaw) {
+		if (readLen) != len(pageHeaderRaw) {
 			panic(errors.New("invalid page length. Expected " + strconv.Itoa(len(pageHeaderRaw)) + "but received" + strconv.Itoa(readLen)))
 		} else if err != nil {
 			panic(err)

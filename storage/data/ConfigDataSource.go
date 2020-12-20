@@ -43,8 +43,6 @@ func (c *ConfigFileDataSource) GetMetaInfo() (*entity.MetaInfo, error) {
 		}
 		return nil, err
 	}
-	println("shit err is not null")
-	println("file:", f)
 	return nil, err
 }
 
@@ -54,7 +52,6 @@ func (c *ConfigFileDataSource) Init() (*entity.MetaInfo, error) {
 		fmt.Println("ConfigManager already exists. Pages:", res.AmountOfPages)
 		return res, nil
 	}
-	println("Creating a new ConfigManager.")
 	metaInfo := entity.MetaInfo{Version: 001}
 	err := c.SaveMetaInfo(&metaInfo)
 	if err != nil {
